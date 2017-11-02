@@ -1,6 +1,8 @@
-# blossom-demo
+# Blossom Demo Code
+
 Demo Code for Blossom Video Tracking
 
+<<<<<<< HEAD
 Robot setup:
 - Plug in HDMI, power, keyboard, mouse
 - Connect to wifi through wifi logo in menu bar
@@ -28,3 +30,13 @@ On local computer:
     - var url_list = [“{ip address}”]
 - Open google_demo.html in a browser
 - Play video
+=======
+## Instructions
+
+### Robot Side (Raspberry Pi)
+
+- Plug in the robot's RPi using its power supply
+- Connect HDMI, USB Keyboard, and USB Mouse
+
+### Video Browser Side (Web)
+>>>>>>> 0a854ae600e5db8a975a0a9edb587213be6bd3b4
