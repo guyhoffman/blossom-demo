@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <style>
+    #emotion {
+      font-size: 32pt;
+    }
+    #player {
+      margin: 0 auto;
+    }
+    #timecode {
+      position:fixed;
+      top: 10pt;
+      left: 10pt;
+      text-align: center;
+
+      width: 40pt;
+      padding: 5pt;
+      background-color: black;
+      color: white;
+    }
+  </style>
+  <script src="demo_utils.es6"></script>
+  <script src="google_demo.js"></script>
+  <script src="google_demo_mapping.js"></script>
+  </script>
+</head>
+<body>
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div id="player" class="center-block"></div>
+    <div id="emotion" class="text-center alert alert-info">*</div>
+    <div id="timecode">000.0</div>
+
+    <script>
+    // 2. This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // 3. This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '720',
+        width: '1280',
+        videoId: emotions.videoID,
+        events: {
+          'onReady': onPlayerReady,
+        }
+      });
+    }
+
+    var timeupdater = null;
+    var clearEmotion = null;
+    var videotime = 0;
+    var nextEmotion = 0;
+    var endEmotion = 0;
+
+    // 4. The API will call this function when the video player is ready.
+    function onPlayerReady(event) {
+      event.target.playVideo();
+
+      function updateTime() {
+        var oldTime = videotime;
+        if(player && player.getCurrentTime) {
+          videotime = player.getCurrentTime();
+        }
+        if(videotime !== oldTime) {
+          timecode.innerHTML = pad(videotime.toFixed(1),5);
+          checkEmotion(Math.round(videotime * 1000));
+        }
+      }
+
+      timeupdater = setInterval(updateTime, 100);
+    }
+
+    // 5. The API calls this function when the player's state changes.
+    //    The function indicates that when playing a video (state=1),
+    //    the player should play for six seconds and then stop.
+    var done = false;
+
+    function pad(num, size) {
+        var s = num+"";
+        while (s.length < size) s = "0" + s;
+        return s;
+    }
+
+    function checkEmotion(time) {
+
+      // reinit index to find next emotion
+      nextEmotion = 0;
+      while (time>emotions.triggers[nextEmotion].millis) {
+        nextEmotion++;
+      }
+
+      // get next emotion from the list
+      em = emotions.triggers[nextEmotion];
+      // move to the next emotion
+      // if missed emotion, skip it
+      if (em.millis-time>150) {
+        return;
+      }
+      // We hit the next emotion time
+      triggerEmotion(em);
+      nextEmotion++;
+
+    }
+
+    // handle clearing and triggering emotions
+    function triggerEmotion(em) {
+      clearTimeout(clearEmotion);
+      emotion.innerHTML = em.emotion;
+      handleEmotion(em)
+
+      // if no set duration, assign
+      if (!em.duration) {
+        em.duration = 2000;
+      }
+      // overwrite emotion
+      clearEmotion = setTimeout(triggerEmotion, em.duration, {"emotion": "*", "duration": 999999999});
+    }
+
+    // get the url and set the port to send messages
+    var url = server_url;
+    server_port = "5555";
+
+    // get desired emotion and send to robot 
+    function handleEmotion(em) {
+      // if not null emotion
+      if(em.emotion!="*") {
+        // create message with url, server, and gesture
+        msg = "http://"+url+":"+server_port+"/s/" + em.gesture;
+        // write to html
+        emotion.innerHTML = em.emotion + " -> " + msg;
+        // send 
+        $.get(msg, function(data, status){});
+      }
+
+    }
+    </script>
+</body>
+</html>

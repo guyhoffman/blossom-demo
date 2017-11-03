@@ -2,7 +2,6 @@
 
 Demo Code for Blossom Video Tracking
 
-<<<<<<< HEAD
 Robot setup:
 - Plug in HDMI, power, keyboard, mouse
 - Connect to wifi through wifi logo in menu bar
@@ -26,17 +25,8 @@ In pi, start RMS:
     - Press enter
 
 On local computer:
-- In the google_demo.html file in the google_demo folder, edit “url_list” on line 136 to the IP address found in the previous step
-    - var url_list = [“{ip address}”]
+- In a terminal, navigate to the blossom-demo folder
+- Run script to set IP address for video
+    - ./set_ip.sh {ip address}
 - Open google_demo.html in a browser
 - Play video
-=======
-## Instructions
-
-### Robot Side (Raspberry Pi)
-
-- Plug in the robot's RPi using its power supply
-- Connect HDMI, USB Keyboard, and USB Mouse
-
-### Video Browser Side (Web)
->>>>>>> 0a854ae600e5db8a975a0a9edb587213be6bd3b4
