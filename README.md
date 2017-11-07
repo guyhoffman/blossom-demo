@@ -11,7 +11,10 @@ Robot setup:
 - If it asks something along the lines of “The authenticity of host … can’t be established”, say “yes”
 - Password is projblossom
 
-In pi, start RMS:
+On pi, update movement files:
+- Copy the files from the 'movement' folder to '/home/pi/RMS/robots/blossom/movement'
+
+On pi, start RMS:
 - cd RMS
 - sudo java -jar javaExt-all-1.0-SNAPSHOT.jar blossom cli
 - make sure that the server is up and running
@@ -30,3 +33,4 @@ On local computer:
     - ./set_ip.sh {ip address}
 - Open google_demo.html in a browser
 - Play video
+
